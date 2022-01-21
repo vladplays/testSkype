@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src='/socket.io/socket.io.js'></script>
+</head>
+<body>
+    <video autoplay id='video'></video>
+    <script>
+        /*let stream=navigator.mediaDevices.getUserMedia({video:true})
+        stream//.then(()=>{
+            let id=document.getElementById('video')
+            id.src=URL.createObjectURL(stream)
+        //})*/
+		let sockets=io.connect('/');
+		let stream2;
+        let id=document.getElementById('video')
+		/*stream2=new MediaStream([])
+		stream2.active=true;
+		console.log(stream2)
+		id.srcObject=stream2
+		sockets.emit('audio', '1');
+		sockets.on('audioMes', function(msg){
+			//sockets.emit('audio', stream);
+			console.log( msg )
+			
+		});*/
+		
+        async function getMedia(constraints) {
+            try {
+                await navigator.mediaDevices.getUserMedia(constraints)
+                .then(function(stream) {
+                    stream2=stream
+					var value = window.btoa(stream);
+					function ExampleObject(data){
+					   this.data = data;
+					} 
+					console.log(id);
+                    /*sockets.emit('audio', id);
+					sockets.on('audioMes', function(msg){
+						//sockets.emit('audio', stream);
+						console.log( msg )
+						id.srcObject=msg
+					});*/
+					
+                })
+                .catch(function(err) {
+                    console.log(err)
+                });
+            } catch(err) {
+                console.log('Error 2')
+            }
+        }
+        getMedia({ audio: true })
+        
+        //var promise = navigator.mediaDevices.getUserMedia({ video: { deviceId: '192.168.1.6' } });
+        
+    </script>
+</body>
+</html>

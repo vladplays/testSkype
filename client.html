@@ -1,0 +1,63 @@
+<title id='title'></title>
+<meta charset='utf-8'/>
+<script src='/socket.io/socket.io.js'></script>
+<style>
+	.msg{
+		padding:5px;
+		margin:5px;
+		border:1px solid black;
+		border-radius: 5px;
+		background: orange;
+		color:papayawhip;
+		/*width:150px;*/
+		height:50px;
+		text-align:center;
+		font-size: 25px;
+	}
+</style>
+<script>
+	let arr=['John', 'Mike', 'Vasya', 'Ded', 'Roma'];
+	let title=document.querySelector('#title');
+	title.innerText=arr[Math.floor(Math.random()*arr.length)]
+	let sockets=io.connect('/');
+	sockets.on('presentName', function(msg){
+		document.body.innerHTML+='<div class=\'msg\'><span>'+msg.name+'</span>:<span>'+msg.msg+'</span></div>';
+	});
+	
+	function getName(){
+		let message=prompt('Новое сообщение', 'Дед');
+		if(message){
+			sockets.emit('name',{
+				name:title.innerText,
+				msg:message
+			})
+		}
+	}
+	function getAudio(){
+		navigator.mediaDevices.getUserMedia({audio:true, video:false})
+		.then((stream)=>{
+			/*let url=URL.createObjectURL(stream);
+			document.getElementById('audio').src=url
+			console.log(stream)*/
+			const mediaRecorder = new MediaRecorder(stream);
+			
+			mediaRecorder.addEventListener("dataavailable",function(event) {
+				let req=new XMLHttpRequest();
+				req.open('GET', 'localhost:8080/data', false);
+				req.send(event.data);
+				document.getElementById('audio').src='d';
+			});
+			document.querySelector('#start').addEventListener('click', function(){
+				mediaRecorder.start();
+			});
+			document.querySelector('#stop').addEventListener('click', function(){
+				mediaRecorder.stop();
+			});
+		})
+	}
+	getAudio()
+</script>
+<button onclick='getName()'>Новое сообщение</button>
+<button id='start'>Start</button>
+<button id='stop'>Stop</button>
+<video id='audio'></video>
